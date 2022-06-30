@@ -12,6 +12,8 @@ class ReportController extends Controller
 
     public function index() {
 
+        $user = auth()->user();
+
         $search = request('search');
 
         if ($search) {
@@ -25,11 +27,18 @@ class ReportController extends Controller
 
         $reports = $reports->reverse();
 
-        return view('welcome', ['reports' => $reports, 'search' => $search]);
+        return view('welcome', ['reports' => $reports, 'search' => $search, 'user' => $user]);
     }
 
-    public function create() { // exclusiva para editores
-        return view('reports.create');   
+    public function create() { // exclusiva para autores
+
+        $user = auth()->user();
+        
+        if ($user->author) {
+            return view('reports.create', ['user' => $user]);    
+        } else {
+            return redirect('/');
+        }           
     }
 
     public function store(Request $request) { //C
@@ -104,7 +113,11 @@ class ReportController extends Controller
 
         $reports = $user->reports;
 
-        return view('reports.dashboard', ['reports' => $reports]);
+        if ($user->author) {
+            return view('reports.dashboard', ['reports' => $reports, 'user' => $user]);    
+        } else {
+            return redirect('/');
+        } 
     }
 
     public function edit($id) {
@@ -117,7 +130,7 @@ class ReportController extends Controller
             return redirect('/');
         }
 
-        return view('reports.edit', ['report' => $report]);
+        return view('reports.edit', ['report' => $report, 'user' => $user]);
 
     }
 
@@ -132,7 +145,6 @@ class ReportController extends Controller
             'city' => 'required',
             'tags' => 'required'
         ]);
-
 
         $data = $request->all();
 
@@ -165,13 +177,15 @@ class ReportController extends Controller
 
     public function main($game) {
 
+        $user = auth()->user();
+    
         $reports = Report::where([
             ['game', $game]
         ])->get();
 
         $reports = $reports->reverse();
 
-        return view('reports.specify', ['reports' => $reports, 'game' => $game]);
+        return view('reports.specify', ['reports' => $reports, 'game' => $game, 'user' => $user]);
     }
 
     
@@ -200,5 +214,16 @@ class ReportController extends Controller
         }
 
         return back()->with('msg', 'Comentario excluido');
+    }
+
+    public function makeEditor(Request $request) {
+
+        $user = User::where('email', $request->email)->first();
+
+        $user->update([
+            'author' => true
+        ]);
+
+        return redirect('/dashboard')->with('msg', 'Editor adicionado');
     }
 }

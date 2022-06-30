@@ -43,24 +43,27 @@
                         </li>
 
                         @auth
-                        <li class="nav-item">
-                            <a href="/reports/create" class="nav-link">Nova Noticia</a>
-                        </li>
-                        
-                        <li class="nav-item">
-                            <a href="/dashboard" class="nav-link">Minhas Noticias</a>
-                        </li><li class="nav-item">
-                            <form action="/logout" method="POST">
-                                @csrf
-                                <a href="/logout" 
-                                   class="nav-link" 
-                                   onclick="event.preventDefault();
-                                   this.closest('form').submit();"
-                                        >
-                                    Sair
-                                </a>
-                            </form>
-                        </li>
+                            @if ($user->author)
+                            <li class="nav-item">
+                                <a href="/reports/create" class="nav-link">Nova Noticia</a>
+                            </li>
+                            
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link">Minhas Noticias</a>
+                            </li>
+                            @endif
+                            <li class="nav-item">
+                                <form action="/logout" method="POST">
+                                    @csrf
+                                    <a href="/logout" 
+                                    class="nav-link" 
+                                    onclick="event.preventDefault();
+                                    this.closest('form').submit();"
+                                            >
+                                        Sair
+                                    </a>
+                                </form>
+                            </li>
                         @endauth
                         @guest
                         <li class="nav-item">
