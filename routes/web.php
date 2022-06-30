@@ -30,6 +30,8 @@ Route::post('/reports/makecomment/{id}', [ReportController::class, 'makeCommentR
 // new - delete comment
 Route::delete('/reports/deletecomment/{id}', [ReportController::class, 'deleteCommentReport'])->middleware('auth');
 
+// new - new editor
+Route::put('/reports/makeeditor', [ReportController::class, 'makeEditor'])->middleware('auth');
 
 Route::get('/dashboard', [ReportController::class, 'dashboard'])->middleware('auth');
 
