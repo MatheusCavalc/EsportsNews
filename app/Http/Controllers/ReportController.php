@@ -22,10 +22,8 @@ class ReportController extends Controller
                 ['tags', 'like', '%'.$search.'%']
             ])->get();    
         } else {
-            $reports = Report::all();
+            $reports = Report::latest()->paginate(4);
         }
-
-        $reports = $reports->reverse();
 
         return view('welcome', ['reports' => $reports, 'search' => $search, 'user' => $user]);
     }
