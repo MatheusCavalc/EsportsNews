@@ -22,6 +22,7 @@
             </div>
         </div>
     @endforeach
+    {{ $reports->links() }}
     @if(count($reports) == 0 && $search)
         <p>Nao foi possivel encontrar noticias com {{ $search }}! <a href="/">Voltar a Home</a></p>
     @endif
